@@ -1,0 +1,12 @@
+Flask
+Flask-SQLAlchemy
+pywebview
+pyinstaller
+python-dotenv
+Adafruit_PCA9685
+qrcode[pil]
+serial
+requests
+flask-socketio
+Flask-JWT-Extended
+gitpython

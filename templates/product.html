@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Product Detail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            function checkUpdates() {
+                $.get('/check_updates', function (data) {
+                    if (data.updates_available) {
+                        location.reload();
+                    }
+                });
+            }
+
+            setInterval(checkUpdates, 5000);
+        });
+    </script>
+    <meta name="google" content="notranslate">
+</head>
+<style>
+    body {
+        -webkit-user-select: none;
+        /* Chrome, Safari, Opera */
+        -moz-user-select: none;
+        /* Firefox */
+        -ms-user-select: none;
+        /* IE 10+ */
+        user-select: none;
+        /* General */
+    }
+
+    /* Width */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
+
+<body class="{{ product.theme }}">
+    <!-- Ad video play when user inactivity -->
+    <div class="videoContainer hidden" id="video-container">
+    </div>
+    <div class="pageContent">
+        <!-- circled collection of products -->
+        <div class="container">
+            <div class="menu-wrapper" id="menu_wrapper">
+                {% for product_item in products %}
+                {% if product_item.id == product.id %}
+                <div class="item {{ product_item.id }} {{ product_item.theme }} active">
+                    {% endif %}
+                    {% if product_item.id != product.id %}
+                    <div class="item {{ product_item.id }} {{ product_item.theme }}">
+                        {% endif %}
+                        <div class="product-img-container">
+                            <img src="data:image/png;base64,{{ product_item.thumbnail }}" />
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <svg viewBox="0 0 300 300">
+                        <circle id="holder" class="st0" cx="151" cy="151" r="150" />
+                    </svg>
+                </div>
+            </div>
+            <div id="ajax_part">
+                <div class="header">
+                    {% for info in infos %}
+                    <div class="header-item animated fadeIn">
+                        <div class="header-item-circle {{ product.theme }}">
+                            <div class="header-item-inner-circle {{ product.theme }}">
+                                <img src="{{ url_for('static', filename='theme/' + product.theme + '/' + info.info_no + '.svg') }}"
+                                    class="header-item-img" />
+                            </div>
+                        </div>
+                        <div>{{ info.info_comment }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="toolbar">
+                    <div class="searchbtn {{ product.theme }}" onclick="onSearchBtnClicked()">
+                        <img src="{{url_for('static', filename='theme/' + product.theme + '/search.svg')}}" />
+                    </div>
+                    <div class="langlist">
+                        {% for language in languages %}
+                        <div class="lang-item" onclick="onLanguageItemClicked('{{ language.language_id }}')">
+                            <div class="lang-text">{{ language.language_name }}</div>
+                            <div class="lang-icon">
+                                <img src="data:image/png;base64,{{ language.language_icon }}" />
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="langbtn {{ product.theme }}" onclick="onLanguageBtnClicked()">
+                        <img src="{{url_for('static', filename='theme/' + product.theme + '/lang.svg')}}" />
+                    </div>
+                </div>
+                <div class="category-nav">
+                    <div class="category-list">
+                        <div class="category-item" onclick="onCategoryItemClicked('ecig')">
+                            <div class="category-icon">
+                                <img
+                                    src="{{url_for('static', filename='theme/' + product.theme + '/category-ecig.png')}}" />
+                            </div>
+                            <div class="category-text {{ product.theme }}">E-Cigs</div>
+                        </div>
+                        <div class="category-item" onclick="onCategoryItemClicked('snack')">
+                            <div class="category-icon">
+                                <img
+                                    src="{{url_for('static', filename='theme/' + product.theme + '/category-snack.png')}}" />
+                            </div>
+                            <div class="category-text {{ product.theme }}">Snacks</div>
+                        </div>
+                        <div class="category-item" onclick="onCategoryItemClicked('drink')">
+                            <div class="category-icon">
+                                <img
+                                    src="{{url_for('static', filename='theme/' + product.theme + '/category-drink.png')}}" />
+                            </div>
+                            <div class="category-text {{ product.theme }}">Drinks</div>
+                        </div>
+                    </div>
+                    <div class="triggerbtn" onclick="onCategoryTriggered()">
+                        <img
+                            src="{{url_for('static', filename='theme/' + product.theme + '/category-trigger-icon.svg')}}" />
+                    </div>
+                </div>
+                <div class="product-container">
+                    {% if lang_name == "English" %}
+                    <div class="product-title-{{ product.theme }} animated fadeInUp">{{ product.product_name }}</div>
+                    <div class="product-content">
+                        <div class="product-description">
+                            {% for description in product.description.split('\n') %}
+                            <div class="product-desc-item {{ product.theme }} animated fadeIn">
+                                <img
+                                    src="{{ url_for('static', filename='theme/' + product.theme + '/item_mark.svg') }}" />
+                                <div>{{ description }}</div>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <div class="product-title-{{ product.theme }} animated fadeInUp">{{ product.product_name_de
+                                }}</div>
+                            <div class="product-content">
+                                <div class="product-description">
+                                    {% for description in product.description_de.split('\n') %}
+                                    <div class="product-desc-item {{ product.theme }} animated fadeIn">
+                                        <img
+                                            src="{{ url_for('static', filename='theme/' + product.theme + '/item_mark.svg') }}" />
+                                        <div>{{ description }}</div>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                    <div class="product-buybtn {{ product.theme }} animated fadeIn"
+                                        onclick="onProductBuyBtnClicked()">
+                                        {{ lang_mapping.get('LANG_KEY_BUYNOW') }}
+                                        <div class="product-buyicon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="73" height="73"
+                                                viewBox="0 0 73 73" fill="none">
+                                                <path
+                                                    d="M57.9422 57.9085C59.8565 57.9085 61.6925 58.669 63.0461 60.0226C64.3998 61.3763 65.1602 63.2122 65.1602 65.1265C65.1602 67.0409 64.3998 68.8768 63.0461 70.2305C61.6925 71.5841 59.8565 72.3446 57.9422 72.3446C56.0278 72.3446 54.1919 71.5841 52.8382 70.2305C51.4846 68.8768 50.7241 67.0409 50.7241 65.1265C50.7241 61.1205 53.9362 57.9085 57.9422 57.9085ZM0.197754 0.164062H11.9993L15.3918 7.38212H68.7693C69.7264 7.38212 70.6444 7.76235 71.3212 8.43918C71.9981 9.116 72.3783 10.034 72.3783 10.9911C72.3783 11.6047 72.1978 12.2182 71.9452 12.7957L59.0249 36.1461C57.7978 38.3476 55.4159 39.8634 52.7091 39.8634H25.8218L22.5737 45.7461L22.4654 46.1792C22.4654 46.4184 22.5605 46.6479 22.7297 46.8171C22.8989 46.9864 23.1284 47.0814 23.3677 47.0814H65.1602V54.2995H21.8519C19.9376 54.2995 18.1016 53.539 16.748 52.1853C15.3943 50.8317 14.6339 48.9958 14.6339 47.0814C14.6339 45.8182 14.9587 44.6273 15.5 43.6167L20.4083 34.7746L7.41581 7.38212H0.197754V0.164062ZM21.8519 57.9085C23.7663 57.9085 25.6022 58.669 26.9558 60.0226C28.3095 61.3763 29.07 63.2122 29.07 65.1265C29.07 67.0409 28.3095 68.8768 26.9558 70.2305C25.6022 71.5841 23.7663 72.3446 21.8519 72.3446C19.9376 72.3446 18.1016 71.5841 16.748 70.2305C15.3943 68.8768 14.6339 67.0409 14.6339 65.1265C14.6339 61.1205 17.8459 57.9085 21.8519 57.9085ZM54.3332 32.6453L64.3662 14.6002H18.7481L27.2655 32.6453H54.3332Z"
+                                                    fill="black" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if deposit_money != 0 %}
+                        <div class="money-status {{ product.theme }}">
+                            You inserted <span>{{ deposit_money }}</span> €
+                            <div class="withdraw-btn {{ product.theme }}" onclick="onWithdrawBtnClicked()">
+                                Withdraw money
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="footer {{ product.theme }}">
+                            <div class="caution">
+                                {{ lang_mapping.get('LANG_KEY_CAUTION_DISPLAYED') }}
+                            </div>
+                            <div class="caution-mark">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="135" height="129" viewBox="0 0 135 129"
+                                    fill="none">
+                                    <path
+                                        d="M3.44318 30.1877C5.35051 31.9067 7.83712 32.858 10.4415 32.858C12.1039 32.858 13.7569 32.4577 15.2169 31.6994C15.7537 31.4216 16.2718 31.0919 16.7569 30.7199L19.7238 28.4452L27.6593 35.8532C27.8665 36.0463 28.1349 36.1499 28.4128 36.1499C28.4458 36.1499 28.4834 36.1499 28.5164 36.1452C28.8319 36.1122 29.1192 35.9521 29.3029 35.6978C31.3044 32.9475 33.6686 30.4185 36.3388 28.172C36.579 27.9695 36.725 27.6728 36.7297 27.3573C36.7344 27.0418 36.612 26.7357 36.3812 26.5237L28.2574 18.9415L30.1459 15.8662C32.7738 11.59 31.9732 6.04225 28.2432 2.67498C26.3359 0.956022 23.8493 0.00941826 21.245 0.00941826C19.5778 0.00941826 17.9295 0.409723 16.4696 1.16795C15.3676 1.7425 14.3786 2.50544 13.5356 3.44262C12.1792 4.94494 11.3033 6.79576 10.9925 8.802L10.5545 11.6701L7.74764 12.4047C5.7885 12.9181 4.03657 13.9871 2.67553 15.4942C0.815294 17.5616 -0.131309 20.2272 0.0146846 23.0058C0.160678 25.7843 1.37572 28.3369 3.44318 30.1971V30.1877ZM38.9808 96.5677V88.5051C38.9808 88.2037 38.8584 87.9164 38.6418 87.7092C38.4251 87.5019 38.1331 87.3889 37.8317 87.4031C37.0123 87.4407 36.2023 87.3089 35.4299 87.0122C35.0343 86.8615 34.5916 86.9462 34.2808 87.2335L20.7882 99.836L17.8212 97.5614C17.3314 97.1846 16.8134 96.855 16.2812 96.5771C14.8213 95.8189 13.1635 95.4139 11.5011 95.4139C8.89675 95.4139 6.41486 96.3605 4.50752 98.0794C2.44006 99.9397 1.22031 102.497 1.07902 105.275C0.937741 108.054 1.87963 110.724 3.74458 112.797C5.10091 114.304 6.85284 115.368 8.80727 115.877L11.6188 116.611L12.0568 119.484C12.3629 121.485 13.2436 123.341 14.5999 124.853C15.4382 125.785 16.4272 126.548 17.5292 127.123C18.9891 127.881 20.6422 128.281 22.3046 128.281C24.9089 128.281 27.3908 127.335 29.2982 125.616C31.3656 123.751 32.5854 121.193 32.7314 118.415C32.8444 116.291 32.3169 114.223 31.2102 112.434L29.3076 109.354L39.0044 100.298C39.3011 100.02 39.4235 99.6006 39.3199 99.2097C39.0892 98.3431 38.9761 97.453 38.9761 96.5724L38.9808 96.5677ZM131.338 15.4847C129.982 13.9777 128.225 12.9087 126.266 12.3953L123.459 11.6606L123.021 8.79258C122.715 6.78635 121.835 4.93552 120.478 3.4332C119.635 2.49602 118.646 1.73309 117.544 1.15853C116.084 0.400305 114.436 0 112.769 0C110.164 0 107.678 0.946603 105.771 2.66556C102.041 6.03283 101.24 11.5806 103.868 15.8568L105.756 18.9321L97.6373 26.519C97.4065 26.7357 97.2794 27.0371 97.2888 27.3526C97.2982 27.6681 97.4395 27.9648 97.6797 28.1673C100.345 30.4138 102.714 32.9427 104.716 35.6931C104.899 35.9474 105.191 36.1122 105.502 36.1405C105.54 36.1452 105.573 36.1452 105.606 36.1452C105.884 36.1452 106.152 36.0416 106.359 35.8485L114.295 28.4405L117.262 30.7152C117.747 31.0872 118.265 31.4169 118.802 31.6947C120.262 32.453 121.915 32.8533 123.577 32.8533C126.181 32.8533 128.668 31.9067 130.575 30.183C132.643 28.318 133.863 25.7655 134.004 22.9916C134.145 20.2178 133.203 17.5475 131.343 15.48L131.338 15.4847ZM129.511 98.0841C127.604 96.3652 125.122 95.4186 122.517 95.4186C120.85 95.4186 119.197 95.8189 117.737 96.5818C117.205 96.8549 116.687 97.1893 116.197 97.5661L113.23 99.8408L99.7377 87.2382C99.4269 86.9509 98.9842 86.8662 98.5886 87.0169C97.821 87.3136 97.0062 87.4454 96.1868 87.4078C95.8854 87.3936 95.5934 87.5067 95.3768 87.7139C95.1601 87.9211 95.033 88.2084 95.033 88.5098V96.5724C95.033 97.4578 94.9199 98.3431 94.6892 99.2097C94.5856 99.6006 94.708 100.02 95.0047 100.298L104.701 109.354L102.799 112.434C101.692 114.223 101.169 116.296 101.278 118.415C101.424 121.193 102.643 123.751 104.711 125.616C106.618 127.335 109.1 128.281 111.704 128.281C113.372 128.281 115.02 127.881 116.48 127.123C117.587 126.548 118.571 125.785 119.409 124.853C120.766 123.341 121.646 121.485 121.952 119.489L122.39 116.616L125.202 115.881C127.161 115.373 128.913 114.308 130.265 112.801C132.129 110.729 133.076 108.059 132.93 105.28C132.784 102.502 131.569 99.9491 129.502 98.0841H129.511ZM95.73 82.9761C96.1962 83.0421 96.6671 82.8867 97.0015 82.5476C103.609 75.8554 107.245 67.2324 107.245 58.275C107.245 38.2739 89.2686 21.9555 67.0069 21.56C44.7452 21.9555 26.7692 38.2739 26.7692 58.275C26.7692 67.2324 30.4049 75.8554 37.0123 82.5476C37.3419 82.882 37.8129 83.0421 38.2838 82.9761C38.7548 82.9102 39.1598 82.6229 39.3811 82.2085L42.998 75.4598C43.1016 75.262 43.3371 75.1584 43.5537 75.2149C43.7704 75.2714 43.9258 75.4693 43.9258 75.6953V96.5724C43.9258 98.9083 45.2774 101.089 47.3731 102.13C51.428 104.126 58.0542 106.495 67.0022 106.717C75.9502 106.491 82.5811 104.126 86.6313 102.13C88.727 101.093 90.0786 98.913 90.0786 96.5724V75.6953C90.0786 75.4693 90.234 75.2714 90.4554 75.2149C90.6767 75.1584 90.9075 75.262 91.0111 75.4598L94.6279 82.2085C94.8493 82.6229 95.259 82.9102 95.7253 82.9761H95.73ZM53.2976 67.7928C47.651 67.7928 43.0592 62.3345 43.0592 55.6236C43.0592 54.0788 44.3167 52.8261 45.8614 52.8261H60.7245C62.2692 52.8261 63.5313 54.0835 63.5313 55.6377C63.5313 62.3392 58.9396 67.7975 53.2929 67.7975L53.2976 67.7928ZM74.0005 81.3843L71.1371 83.8521C70.9864 83.984 70.7603 84.0075 70.5861 83.918L67.5061 82.3027C67.1011 82.0908 66.9174 82.0908 66.5124 82.3027L63.4324 83.918C63.2535 84.0122 63.0321 83.984 62.8814 83.8521L60.018 81.3843C59.8108 81.2054 59.7873 80.8946 59.9662 80.6873L65.6176 74.1271C66.4653 73.1428 67.5626 73.1428 68.4103 74.1271L74.0617 80.6826C74.2406 80.8899 74.2171 81.2007 74.0099 81.3796L74.0005 81.3843ZM80.7162 67.7928C75.0742 67.7928 70.4778 62.3392 70.4778 55.633C70.4778 54.0788 71.7399 52.8214 73.2846 52.8214H88.1477C89.6924 52.8214 90.9498 54.0788 90.9498 55.6188C90.9498 62.3298 86.3581 67.7881 80.7115 67.7881L80.7162 67.7928Z"
+                                        fill="white" />
+                                </svg>
+                            </div>
+                        </div>
+                        {% if lang_name == "English" %}
+                        <div class="license-alert-panel hidden">
+                            Your license has expired, Please renew your license before purchasing
+                        </div>
+                        {% else %}
+                        <div class="license-alert-panel hidden">
+                            Ihre Lizenz ist abgelaufen. Bitte erneuern Sie Ihre Lizenz vor dem Kauf
+                        </div>
+                        {% endif %}
+
+                        <div class="search-overlay"></div>
+                        <div class="search-form animated fadeIn">
+                            <div class="search-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                    fill="none" id="close_search_btn" onclick="onCloseSearchBtnClicked()">
+                                    <path d="M39 39L3 3M39 3L3 39" stroke="black" stroke-width="6"
+                                        stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <div class="search-itemlist">
+                                {% for p in products %}
+                                <div class="search-item {{ product.theme }} animated fadeIn time-{{ p.id }}"
+                                    onclick="handleItemClick('{{ p.id }}')">
+                                    <div class="search-product-img {{ product.theme }}">
+                                        <img clsss="search-img-content" src="data:image/png;base64,{{ p.thumbnail }}" />
+                                    </div>
+                                    {% if lang_name == "English" %}
+                                    <div class="search-item-text {{ product.theme }}">{{ p.product_name }}</div>
+                                    {% else %}
+                                    <div class="search-item-text {{ product.theme }}">{{ p.product_name_de }}</div>
+                                    {% endif %}
+
+                                    {% if p.category == "ecig" %}
+                                    <div class="search-item-category {{ product.theme }}">E-Cig</div>
+                                    {% endif %}
+                                    {% if p.category == "snack" %}
+                                    <div class="search-item-category {{ product.theme }}">Snacks</div>
+                                    {% endif %}
+                                    {% if p.category == "drink" %}
+                                    <div class="search-item-category {{ product.theme }}">Drink</div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="withdraw-modal">
+                            Are you sure you want to withdraw inserted money?
+                            <div class="withdraw-modal-btn {{ product.theme }}" onclick="onWithdrawYesBtnClicked()">YES
+                            </div>
+                            <div class="withdraw-modal-btn {{ product.theme }}" onclick="onWithdrawNoBtnClicked()">NO
+                            </div>
+                        </div>
+                        <input type="hidden" id="product_id" value="{{ product.id }}" />
+                        <input type="hidden" id="language_id" value="{{ language_id }}" />
+                    </div>
+                </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+<script>
+    // Check machine license
+    var isLicensed = "{{ isLicensed }}";
+    if (isLicensed == "False") {
+        document.querySelector('.license-alert-panel').classList.remove('hidden');
+        document.querySelector('.product-buybtn').classList.add('disabled');
+    }
+
+    $(document).ready(function () {
+        function checkLicense() {
+            $.get('/check_license', function (data) {
+                if (data.isLicensed) {
+                    document.querySelector('.license-alert-panel').classList.add('hidden');
+                    document.querySelector('.product-buybtn').classList.remove('disabled');
+                } else {
+                    document.querySelector('.license-alert-panel').classList.remove('hidden');
+                    document.querySelector('.product-buybtn').classList.add('disabled');
+                }
+            });
+        }
+
+        setInterval(checkLicense, 5000);
+    });
+
+    // Global Variables
+    const items = Array.from(document.querySelectorAll(".item"));
+    const numItems = items.length;
+    const radius = 300 * (numItems + 1) / numItems;
+    const centerX = 0;
+    const centerY = 510;
+    const angleStep = (2 * Math.PI) / numItems;
+    const wrapTracker = (value) => value < 0 ? numItems + (value % numItems) : value % numItems;
+    let currentItem = 0;
+    const itemStep = 1 / numItems;
+    let initialY = null;
+    let isItemClicked = null;
+
+    // Handle click on an item
+    function handleItemClick(index) {
+        let diff = 0;
+        if (currentItem == 0) diff = currentItem - index;
+        else diff = numItems - currentItem - index;
+
+        if (diff !== 0) {
+            // Update active item
+            document.querySelector(".item.active").classList.remove("active");
+            items[index].classList.add("active");
+
+            if (Math.abs(diff) < numItems / 2) {
+                moveWheel(-diff * itemStep);
+            } else {
+                const amt = numItems - Math.abs(diff);
+                moveWheel(currentItem > index ? amt * itemStep : amt * -itemStep);
+            }
+
+            event.stopPropagation();
+        }
+    }
+
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.setAttribute('draggable', 'false');
+    });
+
+    // Handle movement of the carousel
+    function moveWheel(amount) {
+
+        var activeItem;
+        currentItem = wrapTracker(currentItem - Math.round(amount / itemStep));
+
+        if (currentItem == 0) activeItem = items[0];
+        else activeItem = items[numItems - currentItem];
+
+        document.querySelector(".item.active").classList.remove("active");
+        activeItem.classList.add("active");
+
+        var languageId = document.getElementById("language_id").value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+
+                // Update positions on the circle
+                items.forEach((item, index) => {
+                    const angle = (index + currentItem) * angleStep + Math.PI;
+                    const x = centerX + radius * Math.cos(angle);
+                    const y = centerY + radius * Math.sin(angle);
+
+                    // Apply styles to position items on the circular path
+                    item.style.left = x + "px";
+                    item.style.top = y + "px";
+                });
+
+                var response = xhr.responseText;
+
+                document.body.classList.remove("pink", "blue", "black", "green");
+                document.body.classList.add(activeItem.classList[2]);
+
+                document.getElementById("ajax_part").innerHTML = response;
+
+                var isLicensed = "{{ isLicensed }}";
+                if (isLicensed == "False") {
+                    document.querySelector('.license-alert-panel').classList.remove('hidden');
+                    document.querySelector('.product-buybtn').classList.add('disabled');
+                }
+
+                const images = document.querySelectorAll('img');
+                images.forEach(img => {
+                    img.setAttribute('draggable', 'false');
+                });
+            }
+        };
+
+        xhr.open(
+            "GET",
+            "/product_detail/" + activeItem.classList[1] + "/" + languageId,
+            true
+        );
+        xhr.send();
+    }
+
+    // Handle mouse down
+    function handleMouseDown(event) {
+        initialY = event.clientY;
+    }
+
+    // Handle mouse up
+    function handleMouseUp(event) {
+        if (initialY === null) {
+            return;
+        }
+
+        const deltaY = event.clientY - initialY;
+        handleDrag(deltaY);
+
+        initialY = null;
+    }
+
+    // Handle the drag
+    function handleDrag(deltaY) {
+        if (deltaY > 100) moveWheel(itemStep);
+        else if (deltaY < -100) moveWheel(-itemStep);
+        else if (isItemClicked !== null) handleItemClick(isItemClicked);
+        isItemClicked = null;
+    }
+
+    function onLanguageBtnClicked() {
+        var langlist = document.querySelector(".langlist");
+        var searchbtn = document.querySelector(".searchbtn");
+
+        if (window.getComputedStyle(langlist).display !== 'flex') {
+            langlist.style.display = 'flex';
+            searchbtn.style.display = 'none';
+            langlist.classList.remove('animated', 'bounceOutRight');
+            langlist.classList.add('animated', 'short', 'bounceInRight');
+            searchbtn.classList.add('animated', 'fadeIn');
+            searchbtn.style.display = 'flex';
+            searchbtn.classList.remove('animated', 'fadeIn');
+        } else {
+            searchbtn.style.display = 'none';
+            langlist.classList.remove('animated', 'bounceInRight');
+            langlist.classList.add('animated', 'bounceOutRight');
+            searchbtn.classList.add('animated', 'fadeIn');
+            langlist.style.display = 'none';
+            searchbtn.style.display = 'flex';
+            searchbtn.classList.remove('animated', 'fadeIn');
+        }
+    }
+
+    function onWithdrawBtnClicked() {
+        var searchOverlay = document.querySelector(".search-overlay");
+        var withdrawModal = document.querySelector(".withdraw-modal");
+
+        searchOverlay.style.display = 'flex';
+        withdrawModal.style.display = 'flex';
+    }
+
+    function onWithdrawYesBtnClicked() {
+        var searchOverlay = document.querySelector(".search-overlay");
+        var withdrawModal = document.querySelector(".withdraw-modal");
+
+        searchOverlay.style.display = 'none';
+        withdrawModal.style.display = 'none';
+
+        document.querySelector('.money-status > span').innerHTML = "0";
+
+        var socket = io.connect('http://localhost:5000');
+
+        socket.on('connect', function () {
+            socket.emit('api_call', {
+                method: 'reset_amount'
+            })
+        });
+    }
+
+    function onWithdrawNoBtnClicked() {
+        var searchOverlay = document.querySelector(".search-overlay");
+        var withdrawModal = document.querySelector(".withdraw-modal");
+
+        searchOverlay.style.display = 'none';
+        withdrawModal.style.display = 'none';
+    }
+
+    function onSearchBtnClicked() {
+        var searchOverlay = document.querySelector(".search-overlay");
+        var searchForm = document.querySelector(".search-form");
+
+        searchOverlay.style.display = 'flex';
+        searchForm.style.display = 'flex';
+    }
+
+    function onCloseSearchBtnClicked() {
+        var searchOverlay = document.querySelector(".search-overlay");
+        var searchForm = document.querySelector(".search-form");
+
+        searchOverlay.style.display = 'none';
+        searchForm.style.display = 'none';
+    }
+
+    function onProductBuyBtnClicked() {
+        var languageId = document.getElementById("language_id").value;
+        window.location.replace('/cart/' + document.getElementById("product_id").value + '/' + languageId);
+    }
+
+    function onLanguageItemClicked(lang_id) {
+        var product_id = document.getElementById('product_id').value;
+        window.location.replace('/product/' + product_id + '/' + lang_id)
+    }
+
+    function onCategoryTriggered() {
+        var categoryNav = document.querySelector(".category-nav");
+        var triggerBtn = document.querySelector(".triggerbtn");
+
+        if (window.getComputedStyle(categoryNav).marginLeft == "-88px") {
+            categoryNav.style.marginLeft = "0px";
+            triggerBtn.style.transform = "scaleX(-1)";
+            categoryNav.classList.add('animated', 'short', 'bounceInLeft');
+        } else {
+            categoryNav.style.marginLeft = "-88px";
+            triggerBtn.style.transform = "scaleX(1)";
+            categoryNav.classList.remove('animated', 'bounceInLeft');
+        }
+    }
+
+    function onCategoryItemClicked(category_text) {
+        var categoryIndexes = JSON.parse("{{ categoryIndexes }}");
+        var startingIndex = 0;
+
+        if (category_text == 'ecig') {
+            startingIndex = categoryIndexes[0];
+        } else if (category_text == 'snack') {
+            startingIndex = categoryIndexes[1];
+        } else if (category_text == 'drink') {
+            startingIndex = categoryIndexes[2];
+        }
+
+        handleItemClick(startingIndex);
+    }
+
+    function init() {
+        // Position items on the circular path
+        items.forEach((item, index) => {
+            const angle = index * angleStep + Math.PI;
+            const x = centerX + radius * Math.cos(angle);
+            const y = centerY + radius * Math.sin(angle);
+
+            // Apply styles to position items on the circular path
+            item.style.position = "absolute";
+            item.style.left = x + "px";
+            item.style.top = y + "px";
+            item.style.transformOrigin = "center center";
+        });
+
+        // Add click event listeners to items
+        items.forEach((item, index) => {
+            item.addEventListener("mousedown", () => isItemClicked = index);
+        });
+
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+            img.draggable = false;
+            // Prevent default drag behavior
+            img.addEventListener('dragstart', function (e) {
+                e.preventDefault();
+            });
+        });
+    }
+
+    function handleUserActivity() {
+        clearTimeout(inactivityTimer);
+        document.querySelector('.pageContent').classList.remove('hidden');
+        document.querySelector('.videoContainer').classList.add('hidden');
+        inactivityTimer = setTimeout(showVideo, 4 * 30 * 1000);
+    }
+
+    function showVideo() {
+        document.querySelector('.pageContent').classList.add('hidden');
+        document.querySelector('.videoContainer').classList.remove('hidden');
+
+        const videoContainer = document.getElementById('video-container');
+        const videoElement = document.createElement('video');
+        videoElement.controls = false;
+        videoElement.autoplay = true;
+        videoElement.loop = true;
+        videoElement.muted = true;
+
+        const videoSrcElement = document.createElement('source');
+        videoSrcElement.src = "{{ url_for('static', filename='video/ads/ad.mp4') }}";
+        videoSrcElement.type = 'video/mp4';
+
+        videoElement.appendChild(videoSrcElement);
+
+        videoContainer.appendChild(videoElement);
+
+        videoElement.play().then(() => { }).catch(error => {
+            console.error('Autoplay was prevented:', error);
+        });
+    }
+
+    var inactivityTimer;
+    document.addEventListener('click', handleUserActivity);
+    document.addEventListener('mousemove', handleUserActivity);
+
+    // Start the initial timer
+    inactivityTimer = setTimeout(showVideo, 4 * 30 * 1000);
+
+    document.addEventListener("mousedown", handleMouseDown, false);
+    document.addEventListener("mouseup", handleMouseUp, false);
+
+    init();
+</script>
+
+</html>

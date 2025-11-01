@@ -1,0 +1,7 @@
+*.pyc
+myworkenv/
+db/
+static/download/qr/my_qrcode.png
+static/video/ads
+app.log
+

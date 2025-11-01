@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Database Contents</title>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Data</th>
+      </tr>
+      {% for test in tests %}
+        <tr>
+          <td>{{ test.id }}</td>
+          <td>{{ test.data }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    <div>
+      <label for="dataInput">Data:</label>
+      <input type="text" id="dataInput">
+      <button onclick="addData()">Add</button>
+      <button onclick="gotoProduct()">To product</button>
+    </div>
+  </body>
+</html>

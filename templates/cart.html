@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Product Detail</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}" />
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      function checkUpdates() {
+        $.get('/check_updates', function (data) {
+          if (data.updates_available) {
+            location.reload();
+          }
+        });
+      }
+
+      setInterval(checkUpdates, 5000);
+    });
+  </script>
+  <meta name="google" content="notranslate">
+</head>
+<style>
+  body {
+      -webkit-user-select: none; /* Chrome, Safari, Opera */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* IE 10+ */
+      user-select: none; /* General */
+  }
+</style>
+<body class="{{ product.theme }}">
+  <!-- Ad video play when user inactivity -->
+  <div class="videoContainer hidden" id="video-container">
+    </div>
+  <div class="pageContent">
+    <div class="header {{ product.theme }}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="134" height="134" viewBox="0 0 134 134" fill="none" id="top_back">
+        <ellipse cx="67" cy="66.6528" rx="67" ry="66.6528" fill="#1B241B" fill-opacity="0.8" />
+        <path
+          d="M49.818 63.818C48.0607 65.5754 48.0607 68.4246 49.818 70.182L78.4558 98.8198C80.2132 100.577 83.0624 100.577 84.8198 98.8198C86.5772 97.0624 86.5772 94.2132 84.8198 92.4558L59.364 67L84.8198 41.5442C86.5772 39.7868 86.5772 36.9376 84.8198 35.1802C83.0624 33.4228 80.2132 33.4228 78.4558 35.1802L49.818 63.818ZM55 62.5H53V71.5H55V62.5Z"
+          fill="white" />
+      </svg>
+    </div>
+    <div class="content">
+      <div class="animation-circle infinite bubble" style="left: 0px;"></div>
+      <div class="animation-circle infinite bubble2" style="left: 360px; top: 910px;"></div>
+      <div class="animation-circle infinite bubble" style="left: 720px;"></div>
+      <div class="steps">
+        <div class="step animated delay fadeIn">
+          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="47.5" fill="white" stroke="#4BB543" stroke-width="5" />
+            <path d="M46.26 41V36.485H54.695V62H49.655V41H46.26Z" fill="#4BB543" />
+          </svg>
+          <div class="step-text-active" style="left: 96px;">
+            {{ lang_mapping.get('LANG_KEY_STEP_CHOOSEQUANTITY', 'Choose
+            Quantity') }}
+          </div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="47.5" fill="white" fill-opacity="0.6" stroke="#969696" stroke-width="5" />
+            <path
+              d="M42.395 56.47C44.635 54.6033 46.42 53.0517 47.75 51.815C49.08 50.555 50.1883 49.2483 51.075 47.895C51.9617 46.5417 52.405 45.2117 52.405 43.905C52.405 42.715 52.125 41.7817 51.565 41.105C51.005 40.4283 50.1417 40.09 48.975 40.09C47.8083 40.09 46.91 40.4867 46.28 41.28C45.65 42.05 45.3233 43.1117 45.3 44.465H40.54C40.6333 41.665 41.4617 39.5417 43.025 38.095C44.6117 36.6483 46.6183 35.925 49.045 35.925C51.705 35.925 53.7467 36.6367 55.17 38.06C56.5933 39.46 57.305 41.315 57.305 43.625C57.305 45.445 56.815 47.1833 55.835 48.84C54.855 50.4967 53.735 51.9433 52.475 53.18C51.215 54.3933 49.57 55.8633 47.54 57.59H57.865V61.65H40.575V58.01L42.395 56.47Z"
+              fill="#535653" />
+          </svg>
+          <div class="step-text" style="left: 324px;">
+            {{ lang_mapping.get('LANG_KEY_STEP_PAYMENTMETHOD', 'Payment Method')
+            }}
+          </div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="47.5" fill="white" fill-opacity="0.6" stroke="#969696" stroke-width="5" />
+            <path
+              d="M40.925 43.205C41.0417 40.8717 41.8583 39.075 43.375 37.815C44.915 36.5317 46.9333 35.89 49.43 35.89C51.1333 35.89 52.5917 36.1933 53.805 36.8C55.0183 37.3833 55.9283 38.1883 56.535 39.215C57.165 40.2183 57.48 41.3617 57.48 42.645C57.48 44.115 57.095 45.3633 56.325 46.39C55.5783 47.3933 54.68 48.07 53.63 48.42V48.56C54.9833 48.98 56.0333 49.7267 56.78 50.8C57.55 51.8733 57.935 53.25 57.935 54.93C57.935 56.33 57.6083 57.5783 56.955 58.675C56.325 59.7717 55.38 60.635 54.12 61.265C52.8833 61.8717 51.39 62.175 49.64 62.175C47.0033 62.175 44.8567 61.51 43.2 60.18C41.5433 58.85 40.6683 56.89 40.575 54.3H45.335C45.3817 55.4433 45.7667 56.365 46.49 57.065C47.2367 57.7417 48.2517 58.08 49.535 58.08C50.725 58.08 51.635 57.7533 52.265 57.1C52.9183 56.4233 53.245 55.56 53.245 54.51C53.245 53.11 52.8017 52.1067 51.915 51.5C51.0283 50.8933 49.6517 50.59 47.785 50.59H46.77V46.565H47.785C51.0983 46.565 52.755 45.4567 52.755 43.24C52.755 42.2367 52.4517 41.455 51.845 40.895C51.2617 40.335 50.41 40.055 49.29 40.055C48.1933 40.055 47.3417 40.3583 46.735 40.965C46.1517 41.5483 45.8133 42.295 45.72 43.205H40.925Z"
+              fill="#535653" />
+          </svg>
+          <div class="step-text" style="left: 598px;">
+            {{ lang_mapping.get('LANG_KEY_STEP_VERIFICATION', 'Verification') }}
+          </div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="47.5" fill="white" fill-opacity="0.6" stroke="#969696" stroke-width="5" />
+            <path
+              d="M40.645 57.03V53.18L52.09 36.8H57.795V52.76H60.875V57.03H57.795V62H52.895V57.03H40.645ZM53.21 42.05L46.035 52.76H53.21V42.05Z"
+              fill="black" fill-opacity="0.54" />
+          </svg>
+          <div class="step-text" style="left: 807px;">
+            {{ lang_mapping.get('LANG_KEY_STEP_PAYMENTSTATUS', 'Payment Status')
+            }}
+          </div>
+        </div>
+      </div>
+      <div class="modal {{ product.theme }}">
+        <div class="modal-image">
+          <div class="modal-image-go-left" onclick="onPrevInfoImageClicked()">
+            <img src="{{url_for('static', filename='theme/' + product.theme + '/arrow-left.svg')}}" />
+          </div>
+          <div class="modal-image-div">
+            <img src="data:image/png;base64,{{ product.thumbnail }}" class="product-image animated"
+              id="product-image" />
+          </div>
+          <div class="modal-image-go-right" onclick="onNextInfoImageClicked()">
+            <img src="{{url_for('static', filename='theme/' + product.theme + '/arrow-right.svg')}}" />
+          </div>
+        </div>
+        <div class="modal-detail">
+          <div class="modal-text-items">
+            {% if lang_name == "English" %}
+            <div class="modal-title-item">{{ product.product_name }}</div>
+            {% else %}
+            <div class="modal-title-item">{{ product.product_name_de }}</div>
+            {% endif %}
+            <br>
+            <div class="modal-text-item">Price: {{ product.price }}€</div>
+            {% if lang_name == "English" %}
+            <div class="modal-text-item">{{ product.additional_info1 }}</div>
+            <div class="modal-text-item">{{ product.additional_info2 }}</div>
+            <div class="modal-text-item">{{ product.additional_info3 }}</div>
+            <div class="modal-text-item">{{ product.additional_info4 }}</div>
+            <div class="modal-text-item">{{ product.additional_info5 }}</div>
+            <div class="modal-text-item">Current stock: {{ product.stock }} left</div>
+            {% else %}
+            <div class="modal-text-item">{{ product.additional_info1_de }}</div>
+            <div class="modal-text-item">{{ product.additional_info2_de }}</div>
+            <div class="modal-text-item">{{ product.additional_info3_de }}</div>
+            <div class="modal-text-item">{{ product.additional_info4_de }}</div>
+            <div class="modal-text-item">{{ product.additional_info5_de }}</div>
+            <div class="modal-text-item">Lagerbestand: {{ product.stock }} übrig</div>
+            {% endif %}
+          </div>
+          <div class="modal-buy-btn">
+            <div class="control-btn" onclick="minusProduct()">-</div>
+            <div class="buy-btn {{ product.theme }}" onclick="goToPayment()">
+              {{ lang_mapping.get('LANG_KEY_BUY', 'Buy') }}
+              <span id="cart_count">1</span>
+            </div>
+            <div class="control-btn" onclick="plusProduct()">+</div>
+          </div>
+        </div>
+      </div>
+      {% if deposit_money != 0 %}
+      <div class="money-status {{ product.theme }}">
+        You inserted <span>{{ deposit_money }}</span> €
+        <div class="withdraw-btn {{ product.theme }}" onclick="onWithdrawBtnClicked()">
+          Withdraw money
+        </div>
+      </div>
+      <div class="search-overlay"></div>
+      <div class="withdraw-modal">
+        Are you sure you want to withdraw inserted money?
+        <div class="withdraw-modal-btn {{ product.theme }}" onclick="onWithdrawYesBtnClicked()">
+          YES
+        </div>
+        <div class="withdraw-modal-btn {{ product.theme }}" onclick="onWithdrawNoBtnClicked()">
+          NO
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    <div class="footer {{ product.theme }}">
+      <div class="caution">
+        {{ lang_mapping.get('LANG_KEY_CAUTION_DISPLAYED') }}
+      </div>
+      <div class="caution-mark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="135" height="129" viewBox="0 0 135 129" fill="none">
+          <path
+            d="M3.44318 30.1877C5.35051 31.9067 7.83712 32.858 10.4415 32.858C12.1039 32.858 13.7569 32.4577 15.2169 31.6994C15.7537 31.4216 16.2718 31.0919 16.7569 30.7199L19.7238 28.4452L27.6593 35.8532C27.8665 36.0463 28.1349 36.1499 28.4128 36.1499C28.4458 36.1499 28.4834 36.1499 28.5164 36.1452C28.8319 36.1122 29.1192 35.9521 29.3029 35.6978C31.3044 32.9475 33.6686 30.4185 36.3388 28.172C36.579 27.9695 36.725 27.6728 36.7297 27.3573C36.7344 27.0418 36.612 26.7357 36.3812 26.5237L28.2574 18.9415L30.1459 15.8662C32.7738 11.59 31.9732 6.04225 28.2432 2.67498C26.3359 0.956022 23.8493 0.00941826 21.245 0.00941826C19.5778 0.00941826 17.9295 0.409723 16.4696 1.16795C15.3676 1.7425 14.3786 2.50544 13.5356 3.44262C12.1792 4.94494 11.3033 6.79576 10.9925 8.802L10.5545 11.6701L7.74764 12.4047C5.7885 12.9181 4.03657 13.9871 2.67553 15.4942C0.815294 17.5616 -0.131309 20.2272 0.0146846 23.0058C0.160678 25.7843 1.37572 28.3369 3.44318 30.1971V30.1877ZM38.9808 96.5677V88.5051C38.9808 88.2037 38.8584 87.9164 38.6418 87.7092C38.4251 87.5019 38.1331 87.3889 37.8317 87.4031C37.0123 87.4407 36.2023 87.3089 35.4299 87.0122C35.0343 86.8615 34.5916 86.9462 34.2808 87.2335L20.7882 99.836L17.8212 97.5614C17.3314 97.1846 16.8134 96.855 16.2812 96.5771C14.8213 95.8189 13.1635 95.4139 11.5011 95.4139C8.89675 95.4139 6.41486 96.3605 4.50752 98.0794C2.44006 99.9397 1.22031 102.497 1.07902 105.275C0.937741 108.054 1.87963 110.724 3.74458 112.797C5.10091 114.304 6.85284 115.368 8.80727 115.877L11.6188 116.611L12.0568 119.484C12.3629 121.485 13.2436 123.341 14.5999 124.853C15.4382 125.785 16.4272 126.548 17.5292 127.123C18.9891 127.881 20.6422 128.281 22.3046 128.281C24.9089 128.281 27.3908 127.335 29.2982 125.616C31.3656 123.751 32.5854 121.193 32.7314 118.415C32.8444 116.291 32.3169 114.223 31.2102 112.434L29.3076 109.354L39.0044 100.298C39.3011 100.02 39.4235 99.6006 39.3199 99.2097C39.0892 98.3431 38.9761 97.453 38.9761 96.5724L38.9808 96.5677ZM131.338 15.4847C129.982 13.9777 128.225 12.9087 126.266 12.3953L123.459 11.6606L123.021 8.79258C122.715 6.78635 121.835 4.93552 120.478 3.4332C119.635 2.49602 118.646 1.73309 117.544 1.15853C116.084 0.400305 114.436 0 112.769 0C110.164 0 107.678 0.946603 105.771 2.66556C102.041 6.03283 101.24 11.5806 103.868 15.8568L105.756 18.9321L97.6373 26.519C97.4065 26.7357 97.2794 27.0371 97.2888 27.3526C97.2982 27.6681 97.4395 27.9648 97.6797 28.1673C100.345 30.4138 102.714 32.9427 104.716 35.6931C104.899 35.9474 105.191 36.1122 105.502 36.1405C105.54 36.1452 105.573 36.1452 105.606 36.1452C105.884 36.1452 106.152 36.0416 106.359 35.8485L114.295 28.4405L117.262 30.7152C117.747 31.0872 118.265 31.4169 118.802 31.6947C120.262 32.453 121.915 32.8533 123.577 32.8533C126.181 32.8533 128.668 31.9067 130.575 30.183C132.643 28.318 133.863 25.7655 134.004 22.9916C134.145 20.2178 133.203 17.5475 131.343 15.48L131.338 15.4847ZM129.511 98.0841C127.604 96.3652 125.122 95.4186 122.517 95.4186C120.85 95.4186 119.197 95.8189 117.737 96.5818C117.205 96.8549 116.687 97.1893 116.197 97.5661L113.23 99.8408L99.7377 87.2382C99.4269 86.9509 98.9842 86.8662 98.5886 87.0169C97.821 87.3136 97.0062 87.4454 96.1868 87.4078C95.8854 87.3936 95.5934 87.5067 95.3768 87.7139C95.1601 87.9211 95.033 88.2084 95.033 88.5098V96.5724C95.033 97.4578 94.9199 98.3431 94.6892 99.2097C94.5856 99.6006 94.708 100.02 95.0047 100.298L104.701 109.354L102.799 112.434C101.692 114.223 101.169 116.296 101.278 118.415C101.424 121.193 102.643 123.751 104.711 125.616C106.618 127.335 109.1 128.281 111.704 128.281C113.372 128.281 115.02 127.881 116.48 127.123C117.587 126.548 118.571 125.785 119.409 124.853C120.766 123.341 121.646 121.485 121.952 119.489L122.39 116.616L125.202 115.881C127.161 115.373 128.913 114.308 130.265 112.801C132.129 110.729 133.076 108.059 132.93 105.28C132.784 102.502 131.569 99.9491 129.502 98.0841H129.511ZM95.73 82.9761C96.1962 83.0421 96.6671 82.8867 97.0015 82.5476C103.609 75.8554 107.245 67.2324 107.245 58.275C107.245 38.2739 89.2686 21.9555 67.0069 21.56C44.7452 21.9555 26.7692 38.2739 26.7692 58.275C26.7692 67.2324 30.4049 75.8554 37.0123 82.5476C37.3419 82.882 37.8129 83.0421 38.2838 82.9761C38.7548 82.9102 39.1598 82.6229 39.3811 82.2085L42.998 75.4598C43.1016 75.262 43.3371 75.1584 43.5537 75.2149C43.7704 75.2714 43.9258 75.4693 43.9258 75.6953V96.5724C43.9258 98.9083 45.2774 101.089 47.3731 102.13C51.428 104.126 58.0542 106.495 67.0022 106.717C75.9502 106.491 82.5811 104.126 86.6313 102.13C88.727 101.093 90.0786 98.913 90.0786 96.5724V75.6953C90.0786 75.4693 90.234 75.2714 90.4554 75.2149C90.6767 75.1584 90.9075 75.262 91.0111 75.4598L94.6279 82.2085C94.8493 82.6229 95.259 82.9102 95.7253 82.9761H95.73ZM53.2976 67.7928C47.651 67.7928 43.0592 62.3345 43.0592 55.6236C43.0592 54.0788 44.3167 52.8261 45.8614 52.8261H60.7245C62.2692 52.8261 63.5313 54.0835 63.5313 55.6377C63.5313 62.3392 58.9396 67.7975 53.2929 67.7975L53.2976 67.7928ZM74.0005 81.3843L71.1371 83.8521C70.9864 83.984 70.7603 84.0075 70.5861 83.918L67.5061 82.3027C67.1011 82.0908 66.9174 82.0908 66.5124 82.3027L63.4324 83.918C63.2535 84.0122 63.0321 83.984 62.8814 83.8521L60.018 81.3843C59.8108 81.2054 59.7873 80.8946 59.9662 80.6873L65.6176 74.1271C66.4653 73.1428 67.5626 73.1428 68.4103 74.1271L74.0617 80.6826C74.2406 80.8899 74.2171 81.2007 74.0099 81.3796L74.0005 81.3843ZM80.7162 67.7928C75.0742 67.7928 70.4778 62.3392 70.4778 55.633C70.4778 54.0788 71.7399 52.8214 73.2846 52.8214H88.1477C89.6924 52.8214 90.9498 54.0788 90.9498 55.6188C90.9498 62.3298 86.3581 67.7881 80.7115 67.7881L80.7162 67.7928Z"
+            fill="white" />
+        </svg>
+      </div>
+    </div>
+    <input type="hidden" id="product_id" value="{{ product.id }}" />
+    <input type="hidden" id="product_price" value="{{ product.price }}" />
+    <input type="hidden" id="language_id" value="{{ language_id }}" />
+
+  </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+<script>
+  let currentImageIndex = 0;
+
+  const images = [
+    "{{ product.thumbnail }}",
+  ];
+
+  const subImage1 = "{{ product.subinfoimage1 }}";
+  const subImage2 = "{{ product.subinfoimage2 }}";
+  const subImage3 = "{{ product.subinfoimage3 }}";
+
+  if (subImage1 != "(None,)")
+    images.push(subImage1);
+
+  if (subImage2 != "(None,)")
+    images.push(subImage2);
+
+  if (subImage3 != "(None,)")
+    images.push(subImage3);
+
+  console.log(images);
+
+  function onPrevInfoImageClicked() {
+    // Decrement the current image index
+    currentImageIndex--;
+    // If the index becomes negative, loop back to the last image
+    if (currentImageIndex < 0) {
+      currentImageIndex = images.length - 1;
+    }
+    // Update the source of the product image
+    let decodedImageData = images[currentImageIndex];
+    if (currentImageIndex != 0)
+      decodedImageData = decodedImageData.slice(6, -7);
+    document.getElementById('product-image').src = "data:image/png;base64, " + decodedImageData;
+  }
+
+  function onNextInfoImageClicked() {
+    // Increment the current image index
+    currentImageIndex++;
+    // If the index exceeds the number of images, loop back to the first image
+    if (currentImageIndex >= images.length) {
+      currentImageIndex = 0;
+    }
+    // Update the source of the product image
+    let decodedImageData = images[currentImageIndex];
+    if (currentImageIndex != 0)
+      decodedImageData = decodedImageData.slice(6, -7);
+    document.getElementById('product-image').src = "data:image/png;base64, " + decodedImageData;
+  }
+
+  function goToPayment() {
+    var product_id = document.getElementById('product_id').value;
+    language_id = $("#language_id").val();
+    window.location.replace('/payment/' + product_id + '/' + language_id + '/' + $("#product_price").val() + '/' + $("#cart_count").html());
+  }
+
+  function minusProduct() {
+    var current = parseInt($("#cart_count").html());
+    var productStock = "{{ product.stock }}";
+
+    if (current == 1 || productStock == 0)
+      return;
+    $("#cart_count").html((current - 1).toString());
+  }
+
+  function plusProduct() {
+    var current = parseInt($("#cart_count").html());
+    var productStock = "{{ product.stock }}";
+    if (current == productStock || productStock == 0)
+      return;
+    $("#cart_count").html((current + 1).toString());
+  }
+
+  function onWithdrawBtnClicked() {
+    var searchOverlay = document.querySelector(".search-overlay");
+    var withdrawModal = document.querySelector(".withdraw-modal");
+
+    searchOverlay.style.display = 'flex';
+    withdrawModal.style.display = 'flex';
+  }
+
+  function onWithdrawYesBtnClicked() {
+    var searchOverlay = document.querySelector(".search-overlay");
+    var withdrawModal = document.querySelector(".withdraw-modal");
+
+    searchOverlay.style.display = 'none';
+    withdrawModal.style.display = 'none';
+
+    document.querySelector('.money-status > span').innerHTML = "0";
+
+    var socket = io.connect('http://localhost:5000');
+
+    socket.on('connect', function () {
+      socket.emit('api_call', {
+            method: 'reset_amount'
+          })
+    });
+  }
+
+  function onWithdrawNoBtnClicked() {
+    var searchOverlay = document.querySelector(".search-overlay");
+    var withdrawModal = document.querySelector(".withdraw-modal");
+
+    searchOverlay.style.display = 'none';
+    withdrawModal.style.display = 'none';
+  }
+
+  function handleUserActivity() {
+    if (adPlayStarted)
+      window.location.replace('/product/' + $("#product_id").val() + '/' + $("#language_id").val());
+
+    clearTimeout(inactivityTimer);
+    document.querySelector('.pageContent').classList.remove('hidden');
+    document.querySelector('.videoContainer').classList.add('hidden');
+    inactivityTimer = setTimeout(showVideo, 4 * 30 * 1000);    
+  }
+
+    function showVideo() {
+        document.querySelector('.pageContent').classList.add('hidden');
+        document.querySelector('.videoContainer').classList.remove('hidden');
+        
+        const videoContainer = document.getElementById('video-container');
+        const videoElement = document.createElement('video');
+        videoElement.controls = false;
+        videoElement.autoplay = true;
+        videoElement.loop = true;
+        videoElement.muted = true;
+
+        const videoSrcElement = document.createElement('source');
+        videoSrcElement.src = "{{ url_for('static', filename='video/ads/ad.mp4') }}";
+        videoSrcElement.type = 'video/mp4';
+
+        videoElement.appendChild(videoSrcElement);
+
+        videoContainer.appendChild(videoElement);
+
+        videoElement.play().then(() => {
+          adPlayStarted = true;
+        }).catch(error => {
+            console.error('Autoplay was prevented:', error);
+        });
+    }
+
+    var inactivityTimer;
+    var adPlayStarted = false;
+    document.addEventListener('click', handleUserActivity);
+    document.addEventListener('mousemove', handleUserActivity);
+
+    // Start the initial timer
+    inactivityTimer = setTimeout(showVideo, 4 * 30 * 1000);
+</script>
+
+</html>

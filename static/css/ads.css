@@ -1,0 +1,43 @@
+@font-face {
+    font-family: Rajdhani;
+    src: url(../font/Rajdhani-Regular.ttf);
+}
+
+body {
+    margin: 0px;
+    overflow-x: hidden;
+    background-color: #000;
+}
+
+#video-container video {
+    width: 100%;
+    height: 100vh;
+    z-index: 10;
+}
+
+.ads-text-container {
+    width: 100%;
+    position: absolute;
+    bottom: 338px;
+    left: 0px;
+    text-align: center;
+}
+
+.ads-text {
+    color: #FFF;
+    text-align: center;
+    font-family: Rajdhani;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    cursor: pointer;
+    z-index: 20;
+}
+
+.logo {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    bottom: 20px;
+}
